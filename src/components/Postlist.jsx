@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { fetchPosts, deletePost, deletePostAPI, clearMessages } from '../store/postSlice'
@@ -6,12 +6,61 @@ import { fetchPosts, deletePost, deletePostAPI, clearMessages } from '../store/p
 const PostList = () => {
   const dispatch = useDispatch()
   const { fetchedPosts, localPosts, loading, error, success } = useSelector((state) => state.posts)
+  const [userNames, setUserNames] = useState({})
+  const [loadingUsers, setLoadingUsers] = useState(false)
 
   useEffect(() => {
     if (fetchedPosts.length === 0) {
       dispatch(fetchPosts())
     }
   }, [dispatch, fetchedPosts.length])
+
+  // Fetch user names when fetchedPosts change
+  useEffect(() => {
+    const fetchUserNames = async () => {
+      if (fetchedPosts.length === 0) return
+
+      setLoadingUsers(true)
+      const uniqueUserIds = [...new Set(fetchedPosts.map(post => post.userId))]
+      const newUserNames = {}
+
+      try {
+        // Fetch all user details in parallel
+        const userPromises = uniqueUserIds.map(async (userId) => {
+          if (userNames[userId]) return // Skip if already cached
+          
+          try {
+            const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+            if (response.ok) {
+              const user = await response.json()
+              return { userId, user }
+            }
+          } catch (error) {
+            console.error(`Error fetching user ${userId}:`, error)
+            return { userId, user: null }
+          }
+        })
+
+        const userResults = await Promise.all(userPromises)
+        
+        userResults.forEach(result => {
+          if (result && result.user) {
+            newUserNames[result.userId] = result.user.name
+          } else if (result) {
+            newUserNames[result.userId] = `User ${result.userId}`
+          }
+        })
+
+        setUserNames(prev => ({ ...prev, ...newUserNames }))
+      } catch (error) {
+        console.error('Error fetching user names:', error)
+      } finally {
+        setLoadingUsers(false)
+      }
+    }
+
+    fetchUserNames()
+  }, [fetchedPosts])
 
   useEffect(() => {
     if (success || error) {
@@ -30,6 +79,13 @@ const PostList = () => {
         dispatch(deletePostAPI(post.id))
       }
     }
+  }
+
+  const getUserName = (userId) => {
+    if (loadingUsers && !userNames[userId]) {
+      return "Loading..."
+    }
+    return userNames[userId] || `User ${userId}`
   }
 
   const allPosts = [...localPosts, ...fetchedPosts]
@@ -121,9 +177,8 @@ const PostList = () => {
                 }
               </p>
               <div className="post-meta">
-                <span>User ID: {post.userId}</span>
+                <span>👤 By: {getUserName(post.userId)}</span>
               </div>
-              {/* Removed post-actions div for community posts */}
             </div>
           ))}
         </div>

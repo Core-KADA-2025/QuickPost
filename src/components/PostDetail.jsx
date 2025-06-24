@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { deletePost, deletePostAPI } from '../store/postSlice'
+import PostComment from '../components/PostComment' 
 
 const PostDetail = () => {
   const { id } = useParams()
@@ -9,9 +10,9 @@ const PostDetail = () => {
   const dispatch = useDispatch()
   const { fetchedPosts, localPosts } = useSelector((state) => state.posts)
   const [post, setPost] = useState(null)
-  const [comments, setComments] = useState([])
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [commentsLoading, setCommentsLoading] = useState(false)
+  const [userLoading, setUserLoading] = useState(false)
 
   useEffect(() => {
     const findPost = () => {
@@ -26,7 +27,7 @@ const PostDetail = () => {
       if (fetchedPost) {
         setPost({ ...fetchedPost, isLocal: false })
         setLoading(false)
-        fetchComments(id)
+        fetchUser(fetchedPost.userId)
         return
       }
 
@@ -37,18 +38,18 @@ const PostDetail = () => {
     findPost()
   }, [id, localPosts, fetchedPosts])
 
-  const fetchComments = async (postId) => {
-    setCommentsLoading(true)
+  const fetchUser = async (userId) => {
+    setUserLoading(true)
     try {
-      const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`)
+      const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
       if (response.ok) {
-        const commentsData = await response.json()
-        setComments(commentsData)
+        const userData = await response.json()
+        setUser(userData)
       }
     } catch (error) {
-      console.error('Failed to fetch comments:', error)
+      console.error('Failed to fetch user:', error)
     } finally {
-      setCommentsLoading(false)
+      setUserLoading(false)
     }
   }
 
@@ -91,14 +92,16 @@ const PostDetail = () => {
         </Link>
         <div className="post-header-actions">
           {post.isLocal && <div className="post-badge">Your Post</div>}
-          <div className="action-buttons">
-            <Link to={`/edit/${post.id}`} className="btn-edit">
-              Edit Post
-            </Link>
-            <button onClick={handleDelete} className="btn-delete">
-              Delete Post
-            </button>
-          </div>
+          {post.isLocal && (
+            <div className="action-buttons">
+              <Link to={`/edit/${post.id}`} className="btn-edit">
+                Edit Post
+              </Link>
+              <button onClick={handleDelete} className="btn-delete">
+                Delete Post
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -113,7 +116,15 @@ const PostDetail = () => {
               )}
             </>
           ) : (
-            <span>User ID: {post.userId} • Post ID: {post.id}</span>
+            <span>
+              {userLoading ? (
+                'Loading author...'
+              ) : user ? (
+                `Penulis: ${user.name} • Post ID: ${post.id}`
+              ) : (
+                `User ID: ${post.userId} • Post ID: ${post.id}`
+              )}
+            </span>
           )}
         </div>
         <div className="post-body">
@@ -121,24 +132,8 @@ const PostDetail = () => {
         </div>
       </article>
 
-      {!post.isLocal && (
-        <div className="comments-section">
-          <h3>Comments ({comments.length})</h3>
-          {commentsLoading ? (
-            <p>Loading comments...</p>
-          ) : (
-            <div className="comments-list">
-              {comments.map(comment => (
-                <div key={comment.id} className="comment">
-                  <h4>{comment.name}</h4>
-                  <p className="comment-email">{comment.email}</p>
-                  <p>{comment.body}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      {/* Replace the old comments section with the new PostComment component */}
+      <PostComment post={post} isLocal={post.isLocal} />
     </div>
   )
 }
