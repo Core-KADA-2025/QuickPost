@@ -1,12 +1,34 @@
-# React + Vite
+# CORE GROUP 4 QUICKPOST
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 📝 CoreQuickPost
 
-Currently, two official plugins are available:
+**CoreQuickPost** adalah aplikasi web sederhana berbasis CRUD (Create, Read, Update, Delete) yang memungkinkan pengguna untuk melihat, membuat, dan membaca postingan. Dibangun dengan teknologi modern dan di-host secara live menggunakan Netlify.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🔗 Live Demo
 
-## Expanding the ESLint configuration
+🌐 [https://corequickpost.netlify.app](https://corequickpost.netlify.app)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Fitur Utama
+
+- 🔄 Menampilkan daftar semua post dari API
+- 🔍 Melihat detail dari setiap post
+- ➕ Membuat post baru melalui form
+- ☁️ Live deployment di Netlify
+
+## 🖼️ Screenshots
+
+| Fitur | Cuplikan |
+|-------|----------|
+| Post List Page | ![Post List](./screenshots/01-post-list.png) |
+| Post Detail Page | ![Post Detail](./screenshots/02-post-detail.png) |
+| Create Post Form | ![Create Post](./screenshots/03-create-post-form.png) |
+| Netlify Live Site | ![Netlify Live](./screenshots/04-netlify-live-site.png) |
+
+## 🛠️ Teknologi yang Digunakan
+
+- React.js (Frontend Framework)
+- Axios atau Fetch API untuk komunikasi dengan backend
+- JSON Server / REST API (simulasi backend)
+- React Router untuk navigasi
+- Netlify (Deployment)
+
