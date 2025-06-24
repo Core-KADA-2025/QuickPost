@@ -123,17 +123,7 @@ const PostList = () => {
               <div className="post-meta">
                 <span>User ID: {post.userId}</span>
               </div>
-              <div className="post-actions">
-                <Link to={`/edit/${post.id}`} className="btn-edit">
-                  Edit
-                </Link>
-                <button 
-                  onClick={() => handleDelete(post)} 
-                  className="btn-delete"
-                >
-                  Delete
-                </button>
-              </div>
+              {/* Removed post-actions div for community posts */}
             </div>
           ))}
         </div>
