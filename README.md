@@ -20,7 +20,7 @@
 | Fitur | Cuplikan |
 |-------|----------|
 | Post List Page | ![Post List](./screenshots/01-post-list.png) |
-| Post Detail Page | ![Post Detail](./screenshots/02-post-detail-page.jpg) |
+| Post Detail Page | ![Post Detail](./screenshots/02-post-detail-page.png) |
 | Create Post Form | ![Create Post](./screenshots/03-create-post-form.png) |
 | Netlify Live Site | ![Netlify Live](./screenshots/04-netlify-live-site.png) |
 
